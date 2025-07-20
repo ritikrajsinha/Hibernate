@@ -55,12 +55,16 @@ public class Main {
         // Second session - fetch and print
         Session session2 = sessionFactory.openSession();
 
-        Query<Laptop> qs = session2.createQuery("FROM Laptop WHERE ram = 8", Laptop.class);
-        List<Laptop> list = qs.getResultList();
+        String brand="Asus";
+        Query qs = session2.createQuery("select l.brand, l.model FROM Laptop l WHERE l.brand LIKE ?1", Object[].class);
+        qs.setParameter(1, brand);
+        List<Object[]> list = qs.getResultList();
 
-        for (Laptop laptop : list) {
-            System.out.println(laptop);
+        for (int i = 0; i < list.size(); i++) {
+            Object[] row = list.get(i);
+            System.out.println("Brand: " + row[0] + ", Model: " + row[1]);
         }
+
 
         session2.close();
         sessionFactory.close();
