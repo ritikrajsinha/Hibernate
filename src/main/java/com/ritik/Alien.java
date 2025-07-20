@@ -1,6 +1,7 @@
 package com.ritik;
 
 import jakarta.persistence.*;
+import jakarta.persistence.FetchType;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public class Alien {
     private String aname;
     private String tech;
 
-    @ManyToMany
+    @OneToMany(mappedBy = "aliens",fetch = FetchType.EAGER)
     private List<Laptop> laptop;
 
 
@@ -58,4 +59,5 @@ public class Alien {
                 ", laptop=" + laptop +
                 '}';
     }
+
 }

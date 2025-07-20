@@ -13,8 +13,9 @@ public class Laptop {
     private String brand;
     private String model;
     private int ram;
-    @ManyToMany(mappedBy = "laptop")
-    private List<Alien> aliens;
+
+    @ManyToOne
+    private Alien aliens;
 
 
     public int getLid() {
@@ -51,11 +52,11 @@ public class Laptop {
         this.ram = ram;
     }
 
-    public List<Alien> getAliens() {
+    public Alien getAliens() {
         return aliens;
     }
 
-    public void setAliens(List<Alien> aliens) {
+    public void setAliens(Alien aliens) {
         this.aliens = aliens;
     }
 
@@ -66,6 +67,8 @@ public class Laptop {
                 ", brand='" + brand + '\'' +
                 ", model='" + model + '\'' +
                 ", ram=" + ram +
+                ", alienId=" + (aliens != null ? aliens.getAid() : null) +
                 '}';
     }
+
 }
