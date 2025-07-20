@@ -4,8 +4,12 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
+
+
 
 import java.util.Arrays;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -48,11 +52,18 @@ public class Main {
         session.close();
 
         // Second session - fetch and print
+        // Second session - fetch and print
         Session session2 = sessionFactory.openSession();
-        Alien fetchedAlien = session2.get(Alien.class, 101);
-        System.out.println(fetchedAlien);
-        session2.close();
 
+        Query<Laptop> qs = session2.createQuery("FROM Laptop WHERE ram = 8", Laptop.class);
+        List<Laptop> list = qs.getResultList();
+
+        for (Laptop laptop : list) {
+            System.out.println(laptop);
+        }
+
+        session2.close();
         sessionFactory.close();
+
     }
 }
