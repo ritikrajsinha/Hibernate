@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
+import java.util.*;
 
 
 
@@ -29,23 +30,18 @@ public class Main {
         l1.setModel("Xs123");
         l1.setRam(8);
 
-        Laptop l2 = new Laptop();
-        l2.setLid(2);
-        l2.setBrand("Dell");
-        l2.setModel("Xm54300");
-        l2.setRam(16);
+
 
         Alien a1 = new Alien();
         a1.setAid(101);
         a1.setAname("Ritik Raj");
         a1.setTech("Java");
-        a1.setLaptop(Arrays.asList(l1, l2));
+        a1.setLaptop(Arrays.asList(l1));
 
         l1.setAliens(a1);
-        l2.setAliens(a1);
+
 
         session.persist(l1);
-        session.persist(l2);
         session.persist(a1);
 
         transaction.commit();
@@ -53,19 +49,23 @@ public class Main {
 
         // Second session - fetch and print
         // Second session - fetch and print
-        Session session2 = sessionFactory.openSession();
+       Session session2 = sessionFactory.openSession();
 
-        String brand="Asus";
-        Query qs = session2.createQuery("select l.brand, l.model FROM Laptop l WHERE l.brand LIKE ?1", Object[].class);
-        qs.setParameter(1, brand);
-        List<Object[]> list = qs.getResultList();
+        Query<Object[]> query = session2.createQuery(
+                "SELECT a, l FROM Laptop l JOIN l.aliens a", Object[].class);
+        List<Object[]> result = query.getResultList();
 
-        for (int i = 0; i < list.size(); i++) {
-            Object[] row = list.get(i);
-            System.out.println("Brand: " + row[0] + ", Model: " + row[1]);
+        for (int i = 0; i < result.size(); i++) {
+            Object[] row = result.get(i);
+
+            Alien alien = (Alien) row[0];
+            Laptop laptop = (Laptop) row[1];
+
+            System.out.println("Row " + (i + 1) + ":");
+            System.out.println("Alien -> ID: " + alien.getAid() + ", Name: " + alien.getAname() + ", Tech: " + alien.getTech());
+            System.out.println("Laptop -> ID: " + laptop.getLid() + ", Brand: " + laptop.getBrand() + ", Model: " + laptop.getModel() + ", RAM: " + laptop.getRam());
+            System.out.println("---------------------------------------------------");
         }
-
-
         session2.close();
         sessionFactory.close();
 
